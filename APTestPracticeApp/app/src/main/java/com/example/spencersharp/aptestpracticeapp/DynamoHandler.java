@@ -27,13 +27,24 @@ public class DynamoHandler
         mapper = new DynamoDBMapper(client);
     }
 
+    public void incrementVersion()
+    {
+        Version version = new Version();
+        try{
+            version = mapper.load(Version.class,0);
+            version.increment();
+        }catch(Exception e)
+        {
+            version.setVersion(0);
+        }
+        mapper.save(version);
+    }
+
     public long getVersion()
     {
-        long version = 0;
+        Version version = mapper.load(Version.class,0);
 
-        //TODO: Write code for retrieving version from DynamoDB's "version" table you created.
-
-        return version;
+        return version.getVersion();
     }
 
 
