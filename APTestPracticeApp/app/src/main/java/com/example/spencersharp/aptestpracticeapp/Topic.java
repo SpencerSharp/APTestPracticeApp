@@ -2,12 +2,13 @@ package com.example.spencersharp.aptestpracticeapp;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIgnore;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@DynamoDBTable(tableName = "Subjects")
+@DynamoDBTable(tableName = "Topics")
 public class Topic
 {
     public long id;
@@ -26,7 +27,7 @@ public class Topic
         questionIDs = questionIDsString;
     }
 
-    @DynamoDBHashKey(attributeName = "id")
+    @DynamoDBHashKey(attributeName = "_id")
     public long getID()
     {
         return id;
@@ -59,6 +60,7 @@ public class Topic
         questionIDs = questionIDsString;
     }
 
+    @DynamoDBIgnore
     public ArrayList<Long> getQuestionIDsArrayList()
     {
         String[] questionIDsArray = questionIDs.split("-");
@@ -66,6 +68,7 @@ public class Topic
         return questionIDsArrayList;
     }
 
+    /*
     public ArrayList<Question> getQuestions()
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -77,5 +80,20 @@ public class Topic
             questions.add(localDB.getQuestionFromID(questionID));
 
         return questions;
+    }
+    */
+
+    @DynamoDBIgnore
+    public Topic clone()
+    {
+        Topic topic = new Topic(id, topicName, questionIDs);
+        return topic;
+    }
+
+    @DynamoDBIgnore
+    public String toString()
+    {
+        String ret = id + " " + topicName + " " + questionIDs;
+        return ret;
     }
 }

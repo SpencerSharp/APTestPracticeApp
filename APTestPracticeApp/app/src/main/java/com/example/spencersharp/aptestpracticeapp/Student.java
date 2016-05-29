@@ -2,6 +2,7 @@ package com.example.spencersharp.aptestpracticeapp;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIgnore;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ public class Student
         this.questionDataIDs = questionDataIDs;
     }
 
-    @DynamoDBHashKey(attributeName = "id")
-    public long getID(long id)
+    @DynamoDBHashKey(attributeName = "_id")
+    public long getID()
     {
         return id;
     }
@@ -81,6 +82,7 @@ public class Student
         return subjectIDsArrayList;
     }
 
+    /*
     public ArrayList<Subject> getSubjects()
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -93,6 +95,7 @@ public class Student
 
         return subjects;
     }
+    */
 
     @DynamoDBAttribute(attributeName = "questionDataIDs")
     public String getQuestionDataIDsString()
@@ -105,6 +108,7 @@ public class Student
         questionDataIDs = questionDataIDsString;
     }
 
+    @DynamoDBIgnore
     public ArrayList<Long> getQuestionDataIDsArrayList()
     {
         String[] questionDataIDsArray = questionDataIDs.split("-");
@@ -114,6 +118,7 @@ public class Student
         return questionDataIDsArrayList;
     }
 
+    /*
     public ArrayList<QuestionData> getQuestionData()
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -138,5 +143,20 @@ public class Student
         if(questionData.isQuestionCorrect())
             return true;
         return false;
+    }
+    */
+
+    @DynamoDBIgnore
+    public Student clone()
+    {
+        Student student = new Student(id, username, password, subjectIDs, questionDataIDs);
+        return student;
+    }
+
+    @DynamoDBIgnore
+    public String toString()
+    {
+        String ret = id + " " + username + " " + password + " " + subjectIDs + " " + questionDataIDs;
+        return ret;
     }
 }

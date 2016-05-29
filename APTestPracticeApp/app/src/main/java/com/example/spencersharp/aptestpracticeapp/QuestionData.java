@@ -2,18 +2,26 @@ package com.example.spencersharp.aptestpracticeapp;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIgnore;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 @DynamoDBTable(tableName = "QuestionData")
 public class QuestionData
 {
     public long id;
-    public char correctAnswerChoice;
-    public char userPrevChoice;
+    public int correctAnswerChoice;
+    public int userPrevChoice;
 
     public QuestionData()
     {
         userPrevChoice = 0;
+    }
+
+    public QuestionData(long id, int correctAnswerChoice, int userPrevChoice)
+    {
+        this.id = id;
+        this.correctAnswerChoice = correctAnswerChoice;
+        this.userPrevChoice = userPrevChoice;
     }
 
     public QuestionData(Question q)
@@ -23,14 +31,14 @@ public class QuestionData
         userPrevChoice = 0;
     }
 
-    public QuestionData(Question q, char userChoice)
+    public QuestionData(Question q, int userChoice)
     {
         id = q.getID();
         correctAnswerChoice = q.getCorrectAnswerChoice();
         userPrevChoice = userChoice;
     }
 
-    @DynamoDBHashKey(attributeName = "id")
+    @DynamoDBHashKey(attributeName = "_id")
     public long getID()
     {
         return id;
@@ -42,28 +50,29 @@ public class QuestionData
     }
 
     @DynamoDBAttribute(attributeName = "correctAnswerChoice")
-    public char getCorrectAnswerChoice()
+    public int getCorrectAnswerChoice()
     {
         return correctAnswerChoice;
     }
 
-    public void setCorrectAnswerChoice(char correctAnswerChoice)
+    public void setCorrectAnswerChoice(int correctAnswerChoice)
     {
         this.correctAnswerChoice = correctAnswerChoice;
     }
 
 
     @DynamoDBAttribute(attributeName = "userPrevChoice")
-    public char getUserPrevChoice()
+    public int getUserPrevChoice()
     {
         return userPrevChoice;
     }
 
-    public void setUserPrevChoice(char userPrevChoice)
+    public void setUserPrevChoice(int userPrevChoice)
     {
         this.userPrevChoice = userPrevChoice;
     }
 
+    @DynamoDBIgnore
     public boolean isQuestionAttempted()
     {
         if (userPrevChoice != 0)
@@ -71,6 +80,7 @@ public class QuestionData
         return false;
     }
 
+    /*
     public boolean isQuestionCorrect()
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -78,5 +88,20 @@ public class QuestionData
         if(userPrevChoice==correctAnswerChoice)
             return true;
         return false;
+    }
+    */
+
+    @DynamoDBIgnore
+    public QuestionData clone()
+    {
+        QuestionData questionData = new QuestionData(id, correctAnswerChoice, userPrevChoice);
+        return questionData;
+    }
+
+    @DynamoDBIgnore
+    public String toString()
+    {
+        String ret = id + " " + correctAnswerChoice + " " + userPrevChoice;
+        return ret;
     }
 }

@@ -2,6 +2,7 @@ package com.example.spencersharp.aptestpracticeapp;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIgnore;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.util.ArrayList;
@@ -13,14 +14,14 @@ public class Question
     public long id;
     public String qText;
     public String answerChoiceIDs;
-    public char correctAnswerChoice;
+    public int correctAnswerChoice;
 
     public Question()
     {
 
     }
 
-    public Question(long id, String qText, String answerChoiceIDs, char correctAnswerChoice)
+    public Question(long id, String qText, String answerChoiceIDs, int correctAnswerChoice)
     {
         this.id = id;
         this.qText = qText;
@@ -28,7 +29,7 @@ public class Question
         this.correctAnswerChoice = correctAnswerChoice;
     }
 
-    @DynamoDBHashKey(attributeName = "id")
+    @DynamoDBHashKey(attributeName = "_id")
     public long getID()
     {
         return id;
@@ -61,6 +62,7 @@ public class Question
         answerChoiceIDs = answerChoiceIDsString;
     }
 
+    @DynamoDBIgnore
     public ArrayList<Long> getAnswerChoiceIDsArrayList()
     {
         String[] answerChoiceIDsArray = answerChoiceIDs.split("-");
@@ -70,6 +72,7 @@ public class Question
         return answerChoiceIDsArrayList;
     }
 
+    /*
     public ArrayList<AnswerChoice> getAnswerChoices()
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -82,15 +85,30 @@ public class Question
 
         return answerChoices;
     }
+    */
 
     @DynamoDBAttribute(attributeName = "correctAnswerChoice")
-    public char getCorrectAnswerChoice()
+    public int getCorrectAnswerChoice()
     {
         return correctAnswerChoice;
     }
 
-    public void setCorrectAnswerChoice(char correctAnswerChoice)
+    public void setCorrectAnswerChoice(int correctAnswerChoice)
     {
         this.correctAnswerChoice = correctAnswerChoice;
+    }
+
+    @DynamoDBIgnore
+    public Question clone()
+    {
+        Question question = new Question(id, qText, answerChoiceIDs, correctAnswerChoice);
+        return question;
+    }
+
+    @DynamoDBIgnore
+    public String toString()
+    {
+        String ret = id + " " + qText + " " + answerChoiceIDs + " " + correctAnswerChoice;
+        return ret;
     }
 }

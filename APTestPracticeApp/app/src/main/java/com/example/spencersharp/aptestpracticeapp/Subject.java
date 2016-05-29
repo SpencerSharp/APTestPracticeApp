@@ -2,6 +2,7 @@ package com.example.spencersharp.aptestpracticeapp;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIgnore;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.util.ArrayList;
@@ -58,7 +59,8 @@ public class Subject
         topicIDs = topicIDsString;
     }
 
-    public ArrayList<Long> getTopicIDsArrayList()
+    @DynamoDBIgnore
+    private ArrayList<Long> getTopicIDsArrayList()
     {
         ArrayList<Long> questionIDsArrayList = new ArrayList<Long>();
         String[] topicIDsArray = topicIDs.split("-");
@@ -67,6 +69,7 @@ public class Subject
         return questionIDsArrayList;
     }
 
+    /*
     public ArrayList<Topic> getTopicArrayList()
     {
         ArrayList<Topic> topics = new ArrayList<Topic>();
@@ -79,14 +82,21 @@ public class Subject
         }
         return topics;
     }
+    */
 
+    @DynamoDBIgnore
+    public Subject clone()
+    {
+        Subject subject = new Subject(id, subjectName, topicIDs);
+        return subject;
+    }
+
+    @DynamoDBIgnore
     public String toString()
     {
         String ret = id + " " + subjectName + " " + topicIDs;
         return ret;
     }
-
-
 
     /*
     @DynamoDBAttribute(attributeName = "questionIDs")
@@ -117,5 +127,4 @@ public class Subject
         return questions;
     }
     */
-
 }
