@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Code for accessing database
         Intent inten = getIntent();
-        long userID = Integer.parseInt(inten.getStringExtra(LoginActivity.userKey));
+        long userID = 0;
 
 
 
