@@ -69,20 +69,21 @@ public class Subject
         return questionIDsArrayList;
     }
 
-    /*
+    @DynamoDBIgnore
     public ArrayList<Topic> getTopicArrayList()
     {
+        DynamoHandler serverDB = new DynamoHandler();
+
         ArrayList<Topic> topics = new ArrayList<Topic>();
         ArrayList<Long> topicIDsArrayList = getTopicIDsArrayList();
-        LocalDBHandler db = new LocalDBHandler();
+
         for(Long topicID : topicIDsArrayList)
         {
-            Topic topic = db.getTopicFromID(topicID);
+            Topic topic = serverDB.getTopicFromID(topicID);
             topics.add(topic);
         }
         return topics;
     }
-    */
 
     @DynamoDBIgnore
     public Subject clone()

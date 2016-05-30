@@ -35,16 +35,81 @@ public class DynamoHandler
             version.increment();
         }catch(Exception e)
         {
-            version.setVersion(0);
+            version = new Version(0);
         }
         mapper.save(version);
     }
 
     public long getVersion()
     {
-        Version version = mapper.load(Version.class,0);
+        Version version = mapper.load(Version.class, 0);
 
         return version.getVersion();
+    }
+
+
+
+
+
+    //Login info method
+    public boolean tryRegister(String username, String password)
+    {
+        ArrayList<Student> students = getStudents();
+        boolean nameTaken = false;
+        long maxID = 0;
+        for(Student student : students)
+        {
+            if(student.getID()>maxID)
+                maxID = student.getID();
+            if(student.equals(username))
+            {
+                nameTaken = true;
+            }
+        }
+        if(!nameTaken)
+        {
+            Student student = new Student(maxID,username,password,"",generateQuestionData());
+            setStudent(student);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public long tryLogin(String username, String password)
+    {
+        for(Student student : getStudents())
+        {
+            if(student.getUsername().equals(username) && student.getPassword().equals(password))
+                return student.getID();
+        }
+        return -1;
+    }
+
+    public String generateQuestionData()
+    {
+        String s = "";
+        long maxQuestionDataID = 0;
+        for(QuestionData questionData : getQuestionData())
+        {
+            if(questionData.getID() > maxQuestionDataID)
+                maxQuestionDataID = questionData.getID();
+        }
+        long curID = maxQuestionDataID+1;
+        for(Question question : getQuestions())
+        {
+            QuestionData questionData = new QuestionData(curID++,question.getID(),question.getCorrectAnswerChoice(),0);
+            s+=questionData.getID()+"-";
+            setQuestionData(questionData);
+        }
+        s=cutDash(s);
+        return s;
+    }
+
+    public static String cutDash(String s)
+    {
+        String ret = s.substring(0,s.length()-1);
+        return ret;
     }
 
 
@@ -58,14 +123,16 @@ public class DynamoHandler
         return subject;
     }
 
-    public void setSubject(Subject subject)
+    public Subject setSubject(Subject subject)
     {
         mapper.save(subject);
+        return subject;
     }
 
-    public void deleteSubject(Subject subject)
+    public Subject deleteSubject(Subject subject)
     {
         mapper.delete(subject);
+        return subject;
     }
 
     public ArrayList<Subject> getSubjects()
@@ -81,7 +148,7 @@ public class DynamoHandler
         return (ArrayList)subjects;
     }
 
-    public void setSubjects(ArrayList<Subject> subjects)
+    public ArrayList<Subject> setSubjects(ArrayList<Subject> subjects)
     {
         List<Subject> curSubjects = getSubjects();
         ArrayList<Long> idsSaved = new ArrayList<Long>();
@@ -120,6 +187,7 @@ public class DynamoHandler
                 setSubject(subject);
             }
         }
+        return subjects;
     }
 
 
@@ -133,14 +201,16 @@ public class DynamoHandler
         return topic;
     }
 
-    public void setTopic(Topic topic)
+    public Topic setTopic(Topic topic)
     {
         mapper.save(topic);
+        return topic;
     }
 
-    public void deleteTopic(Topic topic)
+    public Topic deleteTopic(Topic topic)
     {
         mapper.delete(topic);
+        return topic;
     }
 
     public ArrayList<Topic> getTopics()
@@ -152,11 +222,10 @@ public class DynamoHandler
         {
             topics.add(topic.clone());
         }
-
         return (ArrayList)topics;
     }
 
-    public void setTopics(ArrayList<Topic> topics)
+    public ArrayList<Topic> setTopics(ArrayList<Topic> topics)
     {
         List<Topic> curTopics = getTopics();
         ArrayList<Long> idsSaved = new ArrayList<Long>();
@@ -195,6 +264,7 @@ public class DynamoHandler
                 setTopic(topic);
             }
         }
+        return topics;
     }
 
 
@@ -208,14 +278,16 @@ public class DynamoHandler
         return question;
     }
 
-    public void setQuestion(Question question)
+    public Question setQuestion(Question question)
     {
         mapper.save(question);
+        return question;
     }
 
-    public void deleteQuestion(Question question)
+    public Question deleteQuestion(Question question)
     {
         mapper.delete(question);
+        return question;
     }
 
     public ArrayList<Question> getQuestions()
@@ -231,7 +303,7 @@ public class DynamoHandler
         return (ArrayList)questions;
     }
 
-    public void setQuestions(ArrayList<Question> questions)
+    public ArrayList<Question> setQuestions(ArrayList<Question> questions)
     {
         List<Question> curQuestions = getQuestions();
         ArrayList<Long> idsSaved = new ArrayList<Long>();
@@ -270,6 +342,7 @@ public class DynamoHandler
                 setQuestion(question);
             }
         }
+        return questions;
     }
 
 
@@ -283,14 +356,16 @@ public class DynamoHandler
         return answerChoice;
     }
 
-    public void setAnswerChoice(AnswerChoice answerChoice)
+    public AnswerChoice setAnswerChoice(AnswerChoice answerChoice)
     {
         mapper.save(answerChoice);
+        return answerChoice;
     }
 
-    public void deleteAnswerChoice(AnswerChoice answerChoice)
+    public AnswerChoice deleteAnswerChoice(AnswerChoice answerChoice)
     {
         mapper.delete(answerChoice);
+        return answerChoice;
     }
 
     public ArrayList<AnswerChoice> getAnswerChoices()
@@ -306,7 +381,7 @@ public class DynamoHandler
         return (ArrayList)answerChoices;
     }
 
-    public void setAnswerChoices(ArrayList<AnswerChoice> answerChoices)
+    public ArrayList<AnswerChoice> setAnswerChoices(ArrayList<AnswerChoice> answerChoices)
     {
         List<AnswerChoice> curAnswerChoices = getAnswerChoices();
         ArrayList<Long> idsSaved = new ArrayList<Long>();
@@ -345,6 +420,7 @@ public class DynamoHandler
                 setAnswerChoice(answerChoice);
             }
         }
+        return answerChoices;
     }
 
 
@@ -358,14 +434,16 @@ public class DynamoHandler
         return student;
     }
 
-    public void setStudent(Student student)
+    public Student setStudent(Student student)
     {
         mapper.save(student);
+        return student;
     }
 
-    public void deleteStudent(Student student)
+    public Student deleteStudent(Student student)
     {
         mapper.delete(student);
+        return student;
     }
 
     public ArrayList<Student> getStudents()
@@ -381,7 +459,7 @@ public class DynamoHandler
         return (ArrayList)students;
     }
 
-    public void setStudents(ArrayList<Student> students)
+    public ArrayList<Student> setStudents(ArrayList<Student> students)
     {
         List<Student> curStudents = getStudents();
         ArrayList<Long> idsSaved = new ArrayList<Long>();
@@ -420,6 +498,7 @@ public class DynamoHandler
                 setStudent(student);
             }
         }
+        return students;
     }
 
 
@@ -433,14 +512,16 @@ public class DynamoHandler
         return questionData;
     }
 
-    public void setQuestionData(QuestionData questionData)
+    public QuestionData setQuestionData(QuestionData questionData)
     {
         mapper.save(questionData);
+        return questionData;
     }
 
-    public void deleteQuestionData(QuestionData questionData)
+    public QuestionData deleteQuestionData(QuestionData questionData)
     {
         mapper.delete(questionData);
+        return questionData;
     }
 
     public ArrayList<QuestionData> getQuestionData()
@@ -456,7 +537,7 @@ public class DynamoHandler
         return (ArrayList)questionDataList;
     }
 
-    public void setQuestionData(ArrayList<QuestionData> questionDataList)
+    public ArrayList<QuestionData> setQuestionData(ArrayList<QuestionData> questionDataList)
     {
         List<QuestionData> curQuestionData = getQuestionData();
         ArrayList<Long> idsSaved = new ArrayList<Long>();
@@ -495,5 +576,6 @@ public class DynamoHandler
                 setQuestionData(questionData);
             }
         }
+        return questionDataList;
     }
 }

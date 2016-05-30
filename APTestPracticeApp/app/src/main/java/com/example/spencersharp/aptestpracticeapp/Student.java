@@ -75,6 +75,7 @@ public class Student
         subjectIDs = subjectIDsString;
     }
 
+    @DynamoDBIgnore
     public ArrayList<Long> getSubjectIDsArrayList()
     {
         String[] subjectIDsArray = subjectIDs.split("-");

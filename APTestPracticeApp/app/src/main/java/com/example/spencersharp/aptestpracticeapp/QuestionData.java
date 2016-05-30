@@ -9,6 +9,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 public class QuestionData
 {
     public long id;
+    public long questionID;
     public int correctAnswerChoice;
     public int userPrevChoice;
 
@@ -17,25 +18,12 @@ public class QuestionData
         userPrevChoice = 0;
     }
 
-    public QuestionData(long id, int correctAnswerChoice, int userPrevChoice)
+    public QuestionData(long id, long questionID, int correctAnswerChoice, int userPrevChoice)
     {
         this.id = id;
+        this.questionID = questionID;
         this.correctAnswerChoice = correctAnswerChoice;
         this.userPrevChoice = userPrevChoice;
-    }
-
-    public QuestionData(Question q)
-    {
-        id = q.getID();
-        correctAnswerChoice = q.getCorrectAnswerChoice();
-        userPrevChoice = 0;
-    }
-
-    public QuestionData(Question q, int userChoice)
-    {
-        id = q.getID();
-        correctAnswerChoice = q.getCorrectAnswerChoice();
-        userPrevChoice = userChoice;
     }
 
     @DynamoDBHashKey(attributeName = "_id")
@@ -47,6 +35,17 @@ public class QuestionData
     public void setID(long id)
     {
         this.id = id;
+    }
+
+    @DynamoDBAttribute(attributeName = "questionID")
+    public long getQuestionID()
+    {
+        return questionID;
+    }
+
+    public void setQuestionID(long questionID)
+    {
+        this.questionID = questionID;
     }
 
     @DynamoDBAttribute(attributeName = "correctAnswerChoice")
@@ -94,7 +93,7 @@ public class QuestionData
     @DynamoDBIgnore
     public QuestionData clone()
     {
-        QuestionData questionData = new QuestionData(id, correctAnswerChoice, userPrevChoice);
+        QuestionData questionData = new QuestionData(id, questionID, correctAnswerChoice, userPrevChoice);
         return questionData;
     }
 

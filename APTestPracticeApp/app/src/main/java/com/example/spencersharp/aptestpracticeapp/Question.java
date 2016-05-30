@@ -72,20 +72,19 @@ public class Question
         return answerChoiceIDsArrayList;
     }
 
-    /*
+    @DynamoDBIgnore
     public ArrayList<AnswerChoice> getAnswerChoices()
     {
-        LocalDBHandler localDB = new LocalDBHandler();
+        DynamoHandler serverDB = new DynamoHandler();
 
         ArrayList<Long> answerChoiceIDsArrayList = getAnswerChoiceIDsArrayList();
         ArrayList<AnswerChoice> answerChoices = new ArrayList<AnswerChoice>();
 
         for(Long answerChoiceID : answerChoiceIDsArrayList)
-            answerChoices.add(localDB.getAnswerChoiceFromID(answerChoiceID));
+            answerChoices.add(serverDB.getAnswerChoiceFromID(answerChoiceID));
 
         return answerChoices;
     }
-    */
 
     @DynamoDBAttribute(attributeName = "correctAnswerChoice")
     public int getCorrectAnswerChoice()
