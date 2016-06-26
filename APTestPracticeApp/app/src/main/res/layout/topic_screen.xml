@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:text="Subject Name Here"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:id="@+id/topicScreenTitle"
+        android:textSize="30sp"
+        android:layout_gravity="center_horizontal" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="400dp"
+        android:id="@+id/mainTopicList"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20sp"
+        android:choiceMode="singleChoice" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="To Main Menu"
+            android:layout_marginLeft="15dp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/mainMenuButton"
+            android:onClick="mainMenuButtonPressed" />
+
+
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentRight="true"
+            android:text="Leaderboard"
+            android:id="@+id/leaderboardButton"
+            android:onClick="leaderboardButtonPressed" />
+
+    </RelativeLayout>
+
+</LinearLayout>

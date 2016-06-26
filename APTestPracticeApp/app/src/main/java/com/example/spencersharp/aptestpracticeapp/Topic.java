@@ -64,7 +64,9 @@ public class Topic
     public ArrayList<Long> getQuestionIDsArrayList()
     {
         String[] questionIDsArray = questionIDs.split("-");
-        ArrayList<Long> questionIDsArrayList = (ArrayList) Arrays.asList(questionIDsArray);
+        ArrayList<Long> questionIDsArrayList = new ArrayList<Long>();
+        for(String questionID : questionIDsArray)
+            questionIDsArrayList.add(Long.parseLong(questionID)+1);
         return questionIDsArrayList;
     }
 
@@ -80,6 +82,16 @@ public class Topic
             questions.add(serverDB.getQuestionFromID(questionID));
 
         return questions;
+    }
+
+    @DynamoDBIgnore
+    public boolean hasQuestion(Question q)
+    {
+        ArrayList<Question> questions = getQuestions();
+        for(Question question : questions)
+            if(question.getID()==q.getID())
+                return true;
+        return false;
     }
 
     @DynamoDBIgnore

@@ -67,11 +67,16 @@ public class Question
     {
         String[] answerChoiceIDsArray = answerChoiceIDs.split("-");
 
-        ArrayList<Long> answerChoiceIDsArrayList = (ArrayList) Arrays.asList(answerChoiceIDsArray);
+        ArrayList<Long> answerChoiceIDsArrayList = new ArrayList<Long>();
+        for(String answerChoiceID : answerChoiceIDsArray)
+        {
+            answerChoiceIDsArrayList.add(Long.parseLong(answerChoiceID));
+        }
 
         return answerChoiceIDsArrayList;
     }
 
+    /*
     @DynamoDBIgnore
     public ArrayList<AnswerChoice> getAnswerChoices()
     {
@@ -85,6 +90,7 @@ public class Question
 
         return answerChoices;
     }
+    */
 
     @DynamoDBAttribute(attributeName = "correctAnswerChoice")
     public int getCorrectAnswerChoice()

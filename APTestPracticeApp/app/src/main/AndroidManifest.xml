@@ -17,7 +17,18 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SubjectScreenActivity"
+            android:label="@string/title_activity_main_screen"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LoadingScreenActivity"
+            android:label="@string/title_activity_loading_screen"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".TopicScreenActivity" />
+        <activity android:name=".QuestionScreenActivity" />
+        <activity android:name=".LeaderboardActivity"></activity>
     </application>
 
 </manifest>

@@ -35,4 +35,9 @@ public class Version
     {
         version++;
     }
+
+    public String toString()
+    {
+        return ""+version;
+    }
 }

@@ -14,5 +14,7 @@
         completions."
     </string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="title_activity_loading_screen">LoadingScreenActivity</string>
 
 </resources>

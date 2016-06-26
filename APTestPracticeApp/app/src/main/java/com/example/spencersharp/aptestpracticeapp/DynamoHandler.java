@@ -1,5 +1,8 @@
 package com.example.spencersharp.aptestpracticeapp;
 
+import android.os.AsyncTask;
+import android.util.Log;
+
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -18,41 +21,56 @@ import java.util.List;
  */
 public class DynamoHandler
 {
-    DynamoDBMapper mapper;
+    final DynamoDBMapper mapper;
     public DynamoHandler()
     {
-        AWSCredentials credentials = new BasicAWSCredentials(""+R.string.db_accessKey,""+R.string.db_accessKey);
+        DynamoCredentials dC = new DynamoCredentials();
+        AWSCredentials credentials = new BasicAWSCredentials(dC.getAccessKey(),dC.getSecretKey());
         AmazonDynamoDBClient client = new AmazonDynamoDBClient(credentials);
         client.setEndpoint("dynamodb.us-west-2.amazonaws.com");
         mapper = new DynamoDBMapper(client);
     }
 
-    public void incrementVersion()
+
+
+
+
+    //Version code
+    public long incrementVersion()
     {
-        Version version = new Version();
-        try{
-            version = mapper.load(Version.class,0);
-            version.increment();
-        }catch(Exception e)
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        PaginatedScanList<Version> scanVersions = mapper.scan(Version.class,scanExpression);
+        long maxVersion = 0;
+        for(Version v : scanVersions)
         {
-            version = new Version(0);
+            if(v.getVersion()>maxVersion)
+                maxVersion = v.getVersion();
+            mapper.delete(v);
         }
+        Version version = new Version(maxVersion+1);
         mapper.save(version);
+        return version.getVersion();
     }
 
     public long getVersion()
     {
-        Version version = mapper.load(Version.class, 0);
-
-        return version.getVersion();
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        PaginatedScanList<Version> scanVersions = mapper.scan(Version.class,scanExpression);
+        long maxVersion = 0;
+        for(Version v : scanVersions)
+        {
+            if(v.getVersion()>maxVersion)
+                maxVersion = v.getVersion();
+        }
+        return maxVersion;
     }
 
 
 
 
 
-    //Login info method
-    public boolean tryRegister(String username, String password)
+    //Login info methods
+    public long tryRegister(String username, String password)
     {
         ArrayList<Student> students = getStudents();
         boolean nameTaken = false;
@@ -66,14 +84,15 @@ public class DynamoHandler
                 nameTaken = true;
             }
         }
+        maxID+=1;
         if(!nameTaken)
         {
             Student student = new Student(maxID,username,password,"",generateQuestionData());
             setStudent(student);
-            return true;
+            return maxID;
         }
         else
-            return false;
+            return -1;
     }
 
     public long tryLogin(String username, String password)
@@ -108,7 +127,7 @@ public class DynamoHandler
 
     public static String cutDash(String s)
     {
-        String ret = s.substring(0,s.length()-1);
+        String ret = s.substring(0, s.length() - 1);
         return ret;
     }
 
@@ -430,7 +449,7 @@ public class DynamoHandler
     //Student methods
     public Student getStudentFromID(long id)
     {
-        Student student = mapper.load(Student.class,id);
+        Student student = mapper.load(Student.class, id);
         return student;
     }
 
@@ -450,13 +469,12 @@ public class DynamoHandler
     {
         ArrayList<Student> students = new ArrayList<Student>();
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-        PaginatedScanList<Student> scanStudents = mapper.scan(Student.class,scanExpression);
+        PaginatedScanList<Student> scanStudents = mapper.scan(Student.class, scanExpression);
         for(Student student : scanStudents)
         {
             students.add(student.clone());
         }
-
-        return (ArrayList)students;
+        return students;
     }
 
     public ArrayList<Student> setStudents(ArrayList<Student> students)
@@ -533,12 +551,12 @@ public class DynamoHandler
         {
             questionDataList.add(questionData.clone());
         }
-
         return (ArrayList)questionDataList;
     }
 
-    public ArrayList<QuestionData> setQuestionData(ArrayList<QuestionData> questionDataList)
+    public ArrayList<QuestionData> setQuestionData(final ArrayList<QuestionData> questionDataList)
     {
+        //Standard AWS Accessing code
         List<QuestionData> curQuestionData = getQuestionData();
         ArrayList<Long> idsSaved = new ArrayList<Long>();
         for(QuestionData questionData : curQuestionData)

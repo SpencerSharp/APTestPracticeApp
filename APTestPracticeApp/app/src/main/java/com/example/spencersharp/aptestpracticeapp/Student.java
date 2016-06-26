@@ -7,6 +7,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 @DynamoDBTable(tableName = "Students")
 public class Student
@@ -29,6 +30,16 @@ public class Student
         this.password = password;
         this.subjectIDs = subjectIDs;
         this.questionDataIDs = questionDataIDs;
+    }
+
+    public Student(String s)
+    {
+        Scanner sc = new Scanner(s);
+        id = Long.parseLong(sc.next());
+        username = sc.next();
+        password = sc.next();
+        subjectIDs = sc.next();
+        questionDataIDs = sc.next();
     }
 
     @DynamoDBHashKey(attributeName = "_id")
@@ -78,12 +89,16 @@ public class Student
     @DynamoDBIgnore
     public ArrayList<Long> getSubjectIDsArrayList()
     {
+        if(subjectIDs.equals("0"))
+            subjectIDs="1";
         String[] subjectIDsArray = subjectIDs.split("-");
-        ArrayList<Long> subjectIDsArrayList = (ArrayList)Arrays.asList(subjectIDsArray);
+        ArrayList<Long> subjectIDsArrayList = new ArrayList<Long>();
+        for(String subjectID : subjectIDsArray)
+            subjectIDsArrayList.add(Long.parseLong(subjectID));
         return subjectIDsArrayList;
     }
 
-    /*
+    @DynamoDBIgnore
     public ArrayList<Subject> getSubjects()
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -96,7 +111,6 @@ public class Student
 
         return subjects;
     }
-    */
 
     @DynamoDBAttribute(attributeName = "questionDataIDs")
     public String getQuestionDataIDsString()
@@ -119,7 +133,7 @@ public class Student
         return questionDataIDsArrayList;
     }
 
-    /*
+    @DynamoDBIgnore
     public ArrayList<QuestionData> getQuestionData()
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -133,6 +147,8 @@ public class Student
         return questionData;
     }
 
+    /*
+    @DynamoDBIgnore
     public boolean userAttemptedQuestion(long id, char answerChoiceSelected)
     {
         LocalDBHandler localDB = new LocalDBHandler();
@@ -146,6 +162,72 @@ public class Student
         return false;
     }
     */
+
+    @DynamoDBIgnore
+    public boolean hasUserAttemptedQuestion(Question q)
+    {
+        ArrayList<QuestionData> questionData = new ArrayList<QuestionData>();
+        for(QuestionData qData : questionData)
+        {
+            if(qData.getQuestionID()==q.getID())
+            {
+                if(qData.getUserPrevChoice()==0)
+                    return false;
+                else
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @DynamoDBIgnore
+    public ArrayList<Question> getQuestionsInTopicNotAttempted(long topicID)
+    {
+        LocalDBHandler localDB = new LocalDBHandler();
+        Topic topic = localDB.getTopicFromID(topicID);
+        ArrayList<Question> allQuestions = localDB.getQuestions();
+        ArrayList<Question> questionsInTopicAndNotAttempted = new ArrayList<Question>();
+        for(Question q : allQuestions)
+        {
+            if(topic.hasQuestion(q) && !hasUserAttemptedQuestion(q))
+                questionsInTopicAndNotAttempted.add(q);
+        }
+        return questionsInTopicAndNotAttempted;
+    }
+
+    @DynamoDBIgnore
+    public boolean didUserGetQuestionCorrect(long questionID)
+    {
+        ArrayList<QuestionData> questionDatas = getQuestionData();
+        QuestionData theQuestionData = new QuestionData();
+        for(QuestionData questionData : questionDatas)
+        {
+            if(questionData.getQuestionID()==questionID)
+            {
+                return questionData.getCorrectAnswerChoice()==questionData.getUserPrevChoice();
+            }
+        }
+        return false;
+    }
+
+    @DynamoDBIgnore
+    public int getTotalQuestionsRightFromSubject(long subjectID)
+    {
+        int total = 0;
+        LocalDBHandler localDB = new LocalDBHandler();
+        Subject subject = localDB.getSubjectFromID(subjectID);
+        ArrayList<Topic> topics = subject.getTopicArrayList();
+        for(Topic topic : topics)
+        {
+            ArrayList<Question> questions = topic.getQuestions();
+            for(Question question : questions)
+            {
+                if(didUserGetQuestionCorrect(question.getID()))
+                    total++;
+            }
+        }
+        return total;
+    }
 
     @DynamoDBIgnore
     public Student clone()

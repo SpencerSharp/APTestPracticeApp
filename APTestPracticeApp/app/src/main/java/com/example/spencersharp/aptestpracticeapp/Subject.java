@@ -72,14 +72,14 @@ public class Subject
     @DynamoDBIgnore
     public ArrayList<Topic> getTopicArrayList()
     {
-        DynamoHandler serverDB = new DynamoHandler();
+        LocalDBHandler localDB = new LocalDBHandler();
 
         ArrayList<Topic> topics = new ArrayList<Topic>();
         ArrayList<Long> topicIDsArrayList = getTopicIDsArrayList();
 
         for(Long topicID : topicIDsArrayList)
         {
-            Topic topic = serverDB.getTopicFromID(topicID);
+            Topic topic = localDB.getTopicFromID(topicID);
             topics.add(topic);
         }
         return topics;
