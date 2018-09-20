@@ -41,35 +41,6 @@ public class MainActivity extends AppCompatActivity {
         LocalDBPermission permission = new LocalDBPermission(this);
         DynamoCredentials credentials = new DynamoCredentials(getResources().getString(R.string.db_accessKey),getResources().getString(R.string.db_secretKey));
         LocalDBHandler localDBHandler = new LocalDBHandler();
-
-        /*final ListView classListView = (ListView) findViewById(R.id.mainClassesList);
-        final ArrayList<String> classList = new ArrayList<String>();
-        classList.add("Biology");
-        classList.add("Physics C");
-        classList.add("English Language");
-
-        //Code for accessing database
-        Intent inten = getIntent();
-        long userID = 0;
-
-
-
-        ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,classList);
-        classListView.setAdapter(categoryArrayAdapter);
-        classListView.setClickable(true);
-        classListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            //This creates the listener for the menu
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) { //Whenever a different item on the menu is selected
-                Adapter ad = arg0.getAdapter();
-
-                Object o = classListView.getItemAtPosition(position);
-                System.out.println(o);
-                curClassSelected = position; //Set the curCatSelected to curCatSelected
-                arg1.setSelected(true);
-            }
-        });*/
     }
 
     public void loginregisterButtonPress(View v)
@@ -80,11 +51,6 @@ public class MainActivity extends AppCompatActivity {
         String password = ""+passwordEditText.getText();
         toLoadingScreen(username,password);
     }
-
-    /*public void displayUsernameTakenError()
-    {
-
-    }*/
 
     public void toLoadingScreen(String username, String password)
     {
